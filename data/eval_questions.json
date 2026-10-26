@@ -1,0 +1,14 @@
+[
+  {"question": "会员积分能换什么东西？", "answer_contains": "300 星光值兑换"},
+  {"question": "新员工第一年有几天年假？", "answer_contains": "带薪年假 7 天"},
+  {"question": "打开的牛奶多久要用完？", "answer_contains": "48 小时"},
+  {"question": "公司老板是谁？", "answer_contains": "林知远"},
+  {"question": "怎么申请报销？", "answer_contains": "报销通过"},
+  {"question": "晚上不想摄入咖啡因，点什么好？", "answer_contains": "无咖啡因"},
+  {"question": "上夜班有什么补贴？", "answer_contains": "夜班"},
+  {"question": "顾客投诉了，我最多能送多少优惠？", "answer_contains": "20 元"},
+  {"question": "试用期工资打几折？", "answer_contains": "90%"},
+  {"question": "自带杯子有优惠吗？", "answer_contains": "立减 3 元"},
+  {"question": "磨豆机怎么校准？", "answer_contains": "25–30 秒"},
+  {"question": "想升职需要满足什么条件？", "answer_contains": "任职满 6 个月"}
+]

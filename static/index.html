@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG 聊天机器人</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-ico">R</div>
+      <div>
+        <div class="brand-title">RAG 聊天机器人</div>
+        <div class="brand-sub" id="version">—</div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-block" id="newChat">新对话</button>
+
+    <section class="card">
+      <div class="card-head">
+        <span class="card-title">模型</span>
+        <button class="btn btn-sm" id="openSettings">设置</button>
+      </div>
+      <div class="status"><i class="dot" id="keyDot"></i><span id="keyStatus">—</span></div>
+      <div class="model-name" id="modelName">—</div>
+    </section>
+
+    <section class="card">
+      <div class="card-title">知识库</div>
+      <div class="stats">
+        <div><span class="stat-num tabular" id="statChunks">–</span><span class="stat-label">文本块</span></div>
+        <div><span class="stat-num" id="statEmbedder">–</span><span class="stat-label">向量化</span></div>
+        <div><span class="stat-num tabular" id="statTopK">–</span><span class="stat-label">Top K</span></div>
+      </div>
+      <ul class="doc-list" id="docList"></ul>
+      <div class="muted small" id="builtAt"></div>
+      <div class="row">
+        <button class="btn btn-sm" id="uploadBtn">上传文档</button>
+        <input type="file" id="upload" accept=".txt,.md,.pdf" hidden>
+        <button class="btn btn-sm" id="reindex">重建索引</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <label class="switch-row">
+        <span>显示检索过程</span>
+        <input type="checkbox" id="showTrace" checked>
+      </label>
+      <p class="muted small">展开每条回答下方的"检索到的片段"和"完整 Prompt"，看清 RAG 每一步做了什么。</p>
+    </section>
+  </aside>
+
+  <main class="chat">
+    <div class="messages" id="messages">
+      <div class="empty" id="empty">
+        <h1>问问你的知识库</h1>
+        <p class="muted">示例文档是一家虚构的"星河咖啡"，大模型自己不可能知道这些内容——答得出来，就说明检索生效了。</p>
+        <div class="suggestions">
+          <button class="chip">会员积分能换什么东西？</button>
+          <button class="chip">新员工第一年有几天年假？</button>
+          <button class="chip">打开的牛奶多久要用完？</button>
+          <button class="chip">公司的股价是多少？</button>
+        </div>
+      </div>
+    </div>
+    <form class="composer" id="composer">
+      <textarea id="input" rows="1" placeholder="输入问题，Enter 发送，Shift+Enter 换行"></textarea>
+      <button class="btn btn-primary" id="send" type="submit">发送</button>
+    </form>
+  </main>
+</div>
+<div class="modal-overlay" id="settingsModal" hidden>
+  <form class="modal" id="settingsForm" autocomplete="off">
+    <div class="modal-header">
+      <span>设置</span>
+      <button type="button" class="modal-x" id="closeSettings" aria-label="关闭">
+        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="form-label" for="apiKey">API Key</label>
+        <div class="input-wrap">
+          <input class="input" id="apiKey" type="password" spellcheck="false" placeholder="sk-ant-...">
+          <button type="button" class="input-action" id="toggleKey">显示</button>
+        </div>
+        <div class="hint" id="apiKeyHint"></div>
+      </div>
+      <div class="field">
+        <label class="form-label" for="baseUrl">接口地址 <span class="muted">可选</span></label>
+        <input class="input" id="baseUrl" spellcheck="false" placeholder="https://api.anthropic.com">
+        <div class="hint">使用代理或中转服务时填写，留空即官方地址。</div>
+      </div>
+      <div class="field">
+        <label class="form-label" for="model">模型</label>
+        <select class="input" id="model"></select>
+        <input class="input" id="customModel" spellcheck="false" placeholder="输入模型名" hidden>
+      </div>
+      <div class="field">
+        <span class="form-label">思考深度</span>
+        <div class="segmented" id="effort">
+          <button type="button" data-value="low">低</button>
+          <button type="button" data-value="medium">中</button>
+          <button type="button" data-value="high">高</button>
+        </div>
+        <div class="hint">越高回答越仔细，也越慢、越贵。知识库问答一般选「低」就够了。</div>
+      </div>
+      <label class="form-check">
+        <input type="checkbox" id="fallbacks">
+        <span>主模型拒答时，自动换模型重答<span class="muted">（中转不支持时关掉）</span></span>
+      </label>
+      <div class="test-result" id="testResult" hidden></div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn" id="testSettings">测试连接</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn" id="cancelSettings">取消</button>
+      <button type="submit" class="btn btn-primary" id="saveSettings">保存</button>
+    </div>
+  </form>
+</div>
+<div class="toast-host" id="toasts"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
